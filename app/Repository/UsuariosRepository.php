@@ -49,7 +49,14 @@ class UsuariosRepository {
     }
     public function buscaUsuarioRepo($dados){
         $usuario = $this->usuariosModel->buscaUsuarioId($dados);
-        return $usuario;
+        $listausuarios = $this->usuariosModel->listaUsuarios();
+        $favoritos = $this->usuariosModel->buscaFavoritosUsuario($dados);
+        $data = array(
+            'usuario' => $usuario,
+            'favoritos' => $favoritos,
+            'listausuarios' => $listausuarios
+        );
+        return $data;
     }
 
 }

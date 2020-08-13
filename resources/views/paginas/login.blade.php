@@ -1,6 +1,5 @@
 @extends('layout.app')
 @section('app')
-
     <div class="d-center">
         <div class="card card-c-l mrg-top-l">
             <div class="card-body">

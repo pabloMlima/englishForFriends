@@ -16,7 +16,7 @@
 
         <ul class="nav flex-column nav-back mb-0">
             <li class="nav-item">
-                <a href="#" class="nav-link nav-backt w-color">
+                <a  href="{{action('HomeController@index')}}"  class="nav-link nav-backt w-color">
                 <i class="fas fa-home"></i>
                     Home
                 </a>
@@ -46,7 +46,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <div class="btn-group">
+                        <div class="btn-group w-color">
                             <a type="button" class="dropdown-toggle w-color f-menu-nav mrg-b-nav" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Menu
                             </a>

@@ -4,10 +4,11 @@
 <?php
   $messageEr = 'Error! It was not possible to register.';
   $messageSuc = 'Success! Flashcard registered.';
+  $sessUsuario = session('usuario');
 ?>
 
 <div class="container mrg-n-dash div-calc">
-    <x-cards.card label="Forum" classHeader="back-header" classBody="">
+    <x-cards.card label="Forum" classHeader="back-header" classCard=" card-respons">
         <div>
             <div class="row">
                 <div class="col-md-4">
@@ -20,10 +21,6 @@
                              href="{{url('/forum/cards')}}" role="tab" aria-controls="profile">
                             Cards
                         </a>
-                        <!--a class="list-group-item list-group-item-action" id="list-messages-list"
-                             href="#list-messages" role="tab" aria-controls="messages">
-                            Expressions
-                        </a-->
                         <a class="list-group-item list-group-item-action @if($pag == 'phrasalVerbs') active @endif" id="list-settings-list"
                              href="{{action('ForumController@pagPhraVerbs')}}" role="tab" aria-controls="settings">
                             Phrasal verbs
@@ -45,7 +42,57 @@
                 <div class="col-md-8">
                     @if(isset($pag))
                         @if($pag == 'news')
-                            Home
+                        <div class="row">
+                                <div class="col-md-10">
+                                    <h3>News </h3>
+                                </div>
+                                <div class="col-md-2">
+                                    <x-buttons.button-link modal="newCardsForum" class="btn-info btn-sm float-right mrg-r-sm"> <i class="fas fa-plus w-color"></i></x-buttons.button-link>
+                                </div>
+                            </div>
+                            <div class="row scroll-forum" >
+                                @if(count($conteudoForum) > 0)
+                                    @foreach($conteudoForum as $pos => $key)
+                                        <x-cards.card classCard="text-white bg-primary mb-3 mrg-top-sm wi-sm-card mrg-l-sm"
+                                            classHeader="1" classLabel="text-left f-size-sm" label="{{$key->usu_nome}} - <?php echo date_format(new DateTime($key->for_con_data_cadastro), 'd/m/Y'); ?>">
+                                            <div class="row j-center">
+                                                <div class="col-md-12">
+                                                    <div class="mrg-c-delete">
+                                                        <a aria-controls="multiCollapseExample1" data-toggle="collapse" href="#tradCars{{$key->forum_conteudos_id}}" role="button" aria-expanded="false">
+                                                            <div class="div-btn-res">
+                                                                <i class="far fa-eye"></i>
+                                                            </div>
+                                                        </a>
+                                                        @if($key->usuarios_id == $sessUsuario[0]->usuarios_id)
+                                                            <x-form.simple-form :action="action('ForumController@deletarConteudoForum')">
+                                                                <input type="hidden" name="forum_conteudos" value="{{$key->forum_conteudos_id}}" />
+                                                                <x-buttons.button-save type="submit" class=" mrg-b-top-n">
+                                                                    <i class="fas fa-times r-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                                </x-buttons.button-save>
+                                                            </x-form.simple-form>
+                                                        @endif
+                                                    </div>
+                                                    <br>
+                                                    {!! $key->for_con_texto !!}
+
+                                                </div>
+                                                <div class="div-right">
+                                                    <x-buttons.button-link function="adicionarFavoritos('{{$key->forum_conteudos_id}}')">
+                                                        <i class="fas fa-star" id="fav'{{$key->forum_conteudos_id}}'"></i>
+                                                    </x-buttons.button-link>
+                                                </div>
+                                            </div>
+                                            <div class="collapse" id="tradCars{{$key->forum_conteudos_id}}">
+                                                <div class="card card-body c-green">
+                                                    {!! $key->for_con_traducao !!}
+                                                </div>
+                                            </div>
+                                        </x-cards.card>
+                                    @endforeach
+                                @else
+                                No recent activity
+                                @endif
+                            </div>
                         @endif
                         @if($pag == 'cards')
                             <div class="row">
@@ -62,18 +109,28 @@
                                         classHeader="1" classLabel="text-left f-size-sm" label="{{$key->usu_nome}} - <?php echo date_format(new DateTime($key->for_con_data_cadastro), 'd/m/Y'); ?>">
                                         <div class="row j-center">
                                             <div class="col-md-12">
-                                                <a aria-controls="multiCollapseExample1" data-toggle="collapse" href="#tradCars{{$key->forum_conteudos_id}}" role="button" aria-expanded="false">
-                                                    <div class="div-btn-res">
-                                                        <i class="far fa-eye"></i>
-                                                    </div>
-                                                </a>
+                                                <div class="mrg-c-delete">
+                                                    <a aria-controls="multiCollapseExample1" data-toggle="collapse" href="#tradCars{{$key->forum_conteudos_id}}" role="button" aria-expanded="false">
+                                                        <div class="div-btn-res">
+                                                            <i class="far fa-eye" ></i>
+                                                        </div>
+                                                    </a>
+                                                    @if($key->usuarios_id == $sessUsuario[0]->usuarios_id)
+                                                        <x-form.simple-form :action="action('ForumController@deletarConteudoForum')">
+                                                            <input type="hidden" name="forum_conteudos" value="{{$key->forum_conteudos_id}}" />
+                                                            <x-buttons.button-save type="submit" class=" mrg-b-top-n">
+                                                                <i class="fas fa-times r-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                            </x-buttons.button-save>
+                                                        </x-form.simple-form>
+                                                    @endif
+                                                </div>
                                                 <br>
                                                 {!! $key->for_con_texto !!}
 
                                             </div>
                                             <div class="div-right">
                                                 <x-buttons.button-link function="adicionarFavoritos('{{$key->forum_conteudos_id}}')">
-                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star w-color" id="fav{{$key->forum_conteudos_id}}"></i>
                                                 </x-buttons.button-link>
                                             </div>
                                         </div>
@@ -101,15 +158,30 @@
                                         classHeader="1" classLabel="text-left f-size-sm" label="{{$key->usu_nome}} - <?php echo date_format(new DateTime($key->for_con_data_cadastro), 'd/m/Y'); ?>">
                                         <div class="row j-center">
                                             <div class="col-md-12">
+                                                <div class="mrg-c-delete">
+                                                    <a class="float-right" type="button"
+                                                        data-toggle="modal" data-target="#showVideo{{$key->forum_conteudos_id}}"
+                                                        onclick="visualizarVideo('{{$key->for_con_link}}','{{$key->forum_conteudos_id}}')">
+                                                        <div class="div-btn-res">
+                                                            <i class="far fa-eye"></i>
+                                                        </div>
+                                                        <br>
+                                                    </a>
+                                                    @if($key->usuarios_id == $sessUsuario[0]->usuarios_id)
+                                                        <x-form.simple-form :action="action('ForumController@deletarConteudoForum')">
+                                                            <input type="hidden" name="forum_conteudos" value="{{$key->forum_conteudos_id}}" />
+                                                            <x-buttons.button-save type="submit" class=" mrg-b-top-n">
+                                                                <i class="fas fa-times r-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                            </x-buttons.button-save>
+                                                        </x-form.simple-form>
+                                                    @endif
+                                                </div>
                                                 {!! $key->for_con_titulo !!}
-                                                <a class="float-right" type="button"
-                                                    data-toggle="modal" data-target="#showVideo{{$key->forum_conteudos_id}}"
-                                                    onclick="visualizarVideo('{{$key->for_con_link}}','{{$key->forum_conteudos_id}}')">
-                                                    <div class="div-btn-res">
-                                                        <i class="far fa-eye"></i>
-                                                    </div>
-                                                    <br>
-                                                </a>
+                                            </div>
+                                            <div class="div-right">
+                                                <x-buttons.button-link function="adicionarFavoritos('{{$key->forum_conteudos_id}}')">
+                                                    <i class="fas fa-star w-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                </x-buttons.button-link>
                                             </div>
                                         </div>
                                     </x-cards.card>
@@ -137,13 +209,28 @@
                                             label="{{$key->usu_nome}} - <?php echo date_format(new DateTime($key->for_con_data_cadastro), 'd/m/Y'); ?>">
                                         <div class="row j-center c-white">
                                             <div class="col-md-12">
-                                                <a href="#" onclick="visualizarText('{{$key->forum_conteudos_id}}')" data-toggle="modal" data-target="#viewText" aria-expanded="false">
-                                                    <div class="div-btn-res">
-                                                        <i class="far fa-eye"></i>
-                                                    </div>
-                                                </a>
+                                                <div class="mrg-c-delete">
+                                                    <a href="#" onclick="visualizarText('{{$key->forum_conteudos_id}}')" data-toggle="modal" data-target="#viewText" aria-expanded="false">
+                                                        <div class="div-btn-res">
+                                                            <i class="far fa-eye"></i>
+                                                        </div>
+                                                    </a>
+                                                    @if($key->usuarios_id == $sessUsuario[0]->usuarios_id)
+                                                        <x-form.simple-form :action="action('ForumController@deletarConteudoForum')">
+                                                            <input type="hidden" name="forum_conteudos" value="{{$key->forum_conteudos_id}}" />
+                                                            <x-buttons.button-save type="submit" class=" mrg-b-top-n">
+                                                                <i class="fas fa-times r-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                            </x-buttons.button-save>
+                                                        </x-form.simple-form>
+                                                    @endif
+                                                </div>
                                                 <br>
                                                 <p class="c-black">{!! $key->for_con_titulo !!}...</p>
+                                            </div>
+                                            <div class="div-right">
+                                                <x-buttons.button-link function="adicionarFavoritos('{{$key->forum_conteudos_id}}')">
+                                                    <i class="fas fa-star w-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                </x-buttons.button-link>
                                             </div>
                                         </div>
                                     </x-cards.card>
@@ -166,11 +253,21 @@
                                         label="{{$key->usu_nome}} - <?php echo date_format(new DateTime($key->for_con_data_cadastro), 'd/m/Y'); ?>">
                                         <div class="row j-center">
                                             <div class="col-md-12">
-                                                <a aria-controls="multiCollapseExample1" data-toggle="collapse" href="#tradCars{{$key->forum_conteudos_id}}" role="button" aria-expanded="false">
-                                                    <div class="div-btn-res">
-                                                        <i class="far fa-eye"></i>
-                                                    </div>
-                                                </a>
+                                                <div>
+                                                    <a aria-controls="multiCollapseExample1" data-toggle="collapse" href="#tradCars{{$key->forum_conteudos_id}}" role="button" aria-expanded="false">
+                                                        <div class="div-btn-res">
+                                                            <i class="far fa-eye"></i>
+                                                        </div>
+                                                    </a>
+                                                    @if($key->usuarios_id == $sessUsuario[0]->usuarios_id)
+                                                        <x-form.simple-form :action="action('ForumController@deletarConteudoForum')">
+                                                            <input type="hidden" name="forum_conteudos" value="{{$key->forum_conteudos_id}}" />
+                                                            <x-buttons.button-save type="submit" class=" mrg-b-top-n">
+                                                                <i class="fas fa-times r-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                            </x-buttons.button-save>
+                                                        </x-form.simple-form>
+                                                    @endif
+                                                </div>
                                                 <br>
                                                 {!! $key->for_con_texto !!}
                                             </div>
@@ -178,6 +275,11 @@
                                                 <div class="card card-body c-green">
                                                     {!! $key->for_con_traducao !!}
                                                 </div>
+                                            </div>
+                                            <div class="div-right">
+                                                <x-buttons.button-link function="adicionarFavoritos('{{$key->forum_conteudos_id}}')">
+                                                    <i class="fas fa-star w-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                </x-buttons.button-link>
                                             </div>
                                         </div>
                                     </x-cards.card>
@@ -199,8 +301,23 @@
                                         classHeader="1" classLabel="text-left f-size-sm" label="{{$key->usu_nome}} - <?php echo date_format(new DateTime($key->for_con_data_cadastro), 'd/m/Y'); ?>">
                                         <div class="row j-center">
                                             <div class="col-md-12">
+                                                <div class="mrg-c-delete">
+                                                    @if($key->usuarios_id == $sessUsuario[0]->usuarios_id)
+                                                        <x-form.simple-form :action="action('ForumController@deletarConteudoForum')">
+                                                            <input type="hidden" name="forum_conteudos" value="{{$key->forum_conteudos_id}}" />
+                                                            <x-buttons.button-save type="submit" class=" mrg-b-top-n">
+                                                                <i class="fas fa-times r-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                            </x-buttons.button-save>
+                                                        </x-form.simple-form>
+                                                    @endif
+                                                </div>
                                                 <br>
                                                 {!! $key->for_con_texto !!}
+                                            </div>
+                                            <div class="div-right">
+                                                <x-buttons.button-link function="adicionarFavoritos('{{$key->forum_conteudos_id}}')">
+                                                    <i class="fas fa-star w-color" id="fav{{$key->forum_conteudos_id}}"></i>
+                                                </x-buttons.button-link>
                                             </div>
                                         </div>
                                     </x-cards.card>

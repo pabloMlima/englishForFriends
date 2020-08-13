@@ -12,3 +12,19 @@ function requestVisualizarText(form) {
 
     return texto;
 }
+
+function requestAddFavoritos(form) {
+    let retorno;
+    let xhr = new XMLHttpRequest();
+    var formData = new FormData();
+    formData.append('_token', form.token)
+    formData.append('forum_id', form.forum_id)
+    formData.append('token_usuario', form.token_usuario)
+    xhr.open("POST", 'http://localhost:8000/api/forum/salva-favoritos-conteudo', false);
+    xhr.onload = function() {
+        retorno = JSON.parse(xhr.response);
+    }
+    xhr.send(formData);
+
+    return retorno;
+}

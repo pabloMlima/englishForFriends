@@ -54,5 +54,20 @@ class CardsController extends Controller
         }
         return redirect($redirect);
     }
+    public function deletarCardUsuario(){
+        $card = $this->request->card;
+        $usuario = $this->request->session()->get('usuario');
+        $data = array(
+                'usuarios_id' => $usuario[0]->usuarios_id,
+                'card' => $card
+        );
+        $delete = $this->cardsmodel->deletarCardUsuario($data);
+        if($delete){
+            $this->request->session()->flash('success', 'Success. Card deleted');
+        }else{
+            $this->request->session()->flash('erro', 'Error. It was not possible deleted card');
+        }
+        return redirect()->back();
+    }
 
 }

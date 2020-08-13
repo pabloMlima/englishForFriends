@@ -5,10 +5,15 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Api\ResponseObject;
 use \Illuminate\Http\Response;
 use \Illuminate\Support\Facades\Response as FacadeResponse;
+use App\UsuariosModel;
 
 class ValidationRepositoryAPI {
 
-    public function checkRequest($validate){
+    public function __construct(UsuariosModel $usuariosModel){
+        $this->usuariosModel = $usuariosModel;
+    }
+
+    public function checkRequest($validate, $token = null){
         $response = new ResponseObject;
         if($validate->fails()){
             $response->status = $response::status_failed;
@@ -17,8 +22,14 @@ class ValidationRepositoryAPI {
                 array_push($response->messages, $item);
             }
         }else{
-            $response->status = $response::status_ok;
-            $response->code = $response::code_ok;
+            $validaToken = $this->usuariosModel->validaToken($token);
+            if(count($validaToken) > 0){
+                $response->status = $response::status_ok;
+                $response->code = $response::code_ok;
+            }else{
+                $response->status = $response::code_unauthorized;
+                $response->messages = 'you do not have permission';
+            }
         }
         return $response;
     }

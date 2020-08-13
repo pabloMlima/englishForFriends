@@ -51,8 +51,16 @@ class LoginController extends Controller{
                     'password' => $dados['passwordOrigin']
                 ]);
             }
+            $dataAtual = date('Y-m-d');
+            $hashToken = md5($checkLogin[0]->usuarios_id.$dataAtual);
+            $data = array(
+                'usuarios_id' => $checkLogin[0]->usuarios_id,
+                'hash' => $hashToken
+            );
+            $salvaToken = $this->loginmodel->atualizaToken($data);
             $this->request->session()->put('avatar', $checkLogin[0]->usu_avatar);
             $this->request->session()->put('usuario', $checkLogin);
+            $this->request->session()->put('token', $hashToken);
             return redirect('/');
         }else{
             $this->request->session()->flash('erroLogin', 'Email or password incorrect');

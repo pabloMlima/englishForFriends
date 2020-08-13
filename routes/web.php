@@ -30,6 +30,9 @@ Route::get('/forum/tips', 'ForumController@pagTips')->middleware('authSession');
 Route::post('/forum/insere-conteudo', 'ForumController@insereConteudo')->middleware('authSession');
 
 Route::post('/usuarios/salva-edicao', 'UsuariosController@updateInfoUsers')->middleware('authSession');
-
+Route::get('/home/favoritos-tipo/{tipo}', 'UsuariosController@favoritos')->middleware('authSession');
+Route::post('/home/favoritos/deletar', 'UsuariosController@deleteFavoritos')->middleware('authSession');
+Route::post('/cards/deletar', 'CardsController@deletarCardUsuario')->middleware('authSession');
+Route::post('/forum/deletar/conteudo', 'ForumController@deletarConteudoForum')->middleware('authSession');
 Route::get('/logout', 'LoginController@logout');
 

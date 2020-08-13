@@ -34,3 +34,28 @@ function showTranslateForum() {
         $("#translateDiv").show('500');
     }
 }
+
+function adicionarFavoritos(id) {
+    let tokenUsuario = document.getElementById('tokenusuario').value;
+    let token = formApp();
+    let form = {
+        'forum_id': id,
+        'token': token,
+        'token_usuario': tokenUsuario
+    };
+    let reqApi = requestAddFavoritos(form);
+    console.log('reqApi.status: ' + reqApi.status)
+    if ((reqApi.delete == 0) && (reqApi.status == 1)) {
+        $("#fav" + id).addClass("y-color");
+    }
+    if ((reqApi.delete == 0) && (reqApi.status == 0)) {
+        $("#fav" + id).addClass("y-red");
+    }
+    if ((reqApi.delete == 1) && (reqApi.status == 0)) {
+        $("#fav" + id).removeClass("y-red");
+        $("#fav" + id).removeClass("y-color");
+        $("#fav" + id).addClass("y-white");
+    }
+
+    console.log(reqApi);
+}

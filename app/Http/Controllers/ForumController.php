@@ -18,8 +18,14 @@ class ForumController extends Controller
         $this->request = $request;
     }
     public function index(){
+        $dataAtual = date('Y-m-d');
+        $dados = array(
+            'dataAtual' => $dataAtual
+        );
+        $conteudoForum = $this->forummodel->buscaConteudo($dados);
         return view('paginas.forum.foruns',[
-            'pag' => 'news'
+            'pag' => 'news',
+            'conteudoForum' => $conteudoForum
         ]);
     }
     public function pagCards(){
@@ -119,6 +125,21 @@ class ForumController extends Controller
             'pag' => 'text',
             'conteudoForum' => $conteudoForum
         ]);
+    }
+    function deletarConteudoForum(){
+        $forum_conteudos = $this->request->forum_conteudos;
+        $usuario = $this->request->session()->get('usuario');
+        $data = array(
+                'usuarios_id' => $usuario[0]->usuarios_id,
+                'forum_conteudos_id' => $forum_conteudos
+        );
+        $delete = $this->forummodel->deleteForumConteudos($data);
+        if($delete){
+            $this->request->session()->flash('success', 'Success. information deleted');
+        }else{
+            $this->request->session()->flash('erro', 'Error. It was not possible to deleted information');
+        }
+        return redirect()->back();
     }
 
 }

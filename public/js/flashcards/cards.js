@@ -55,6 +55,7 @@ function showCards() {
         $("#myCards").show('500');
         $("#cardsPublic").hide('500');
         $("#newsId").hide('500');
+        $("#myFavoritesHome").hide('500');
     }
 }
 
@@ -65,5 +66,14 @@ function cardsPublicos() {
         $("#cardsPublic").show('500');
         $("#newsId").hide('500');
         $("#cardsDiv").hide('500');
+    }
+}
+
+function showFavoritesHome() {
+    if ($("#myFavoritesHome").is(':visible')) {
+        $("#myFavoritesHome").hide('500');
+    } else {
+        $("#myCards").hide('500')
+        $("#myFavoritesHome").show('500');
     }
 }

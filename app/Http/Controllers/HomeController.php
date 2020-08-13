@@ -18,12 +18,12 @@ class HomeController extends Controller
     public function index(){
         $cards = $this->cardsModel->listaCarsUsuario();
         $usuarios = $this->usuariosModel->listaUsuarios();
-
         $cardsPublicos = $cards->where('car_publico', 1);
         return view('paginas.home', [
             'cards' => $cards,
             'cardsPublicos' => $cardsPublicos,
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
+            'pag' => ''
         ]);
     }
 }

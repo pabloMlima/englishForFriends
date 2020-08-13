@@ -13,5 +13,13 @@ class LoginModel extends Model
                             ->where('usu_senha', $dados['password'])->get();
         return $busca;
     }
+    public function atualizaToken($dados){
+        $update = DB::table('usuarios')
+                            ->where('usuarios_id', $dados['usuarios_id'])
+                            ->update([
+                                'usu_token' => $dados['hash']
+                            ]);
+        return $update;
+    }
 
 }

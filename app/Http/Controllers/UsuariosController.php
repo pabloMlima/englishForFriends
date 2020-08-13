@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\CardsModel;
 use App\Repository\UsuariosRepository;
+use App\UsuariosModel;
+
 class UsuariosController extends Controller{
 
     public function __construct(
             Request $request,
+            CardsModel $cardsModel,
+            UsuariosModel $usuariosModel,
             UsuariosRepository $usuariosRepository){
         $this->request = $request;
+        $this->cardsModel = $cardsModel;
         $this->usuariosRepository = $usuariosRepository;
+        $this->usuariosModel = $usuariosModel;
     }
 
     public function updateInfoUsers(){
@@ -23,6 +30,7 @@ class UsuariosController extends Controller{
             'usuarios_id' => $usuario[0]->usuarios_id
         );
         $dadosUsuario = $this->usuariosRepository->buscaUsuarioRepo($data);
+        $dadosUsuario = $dadosUsuario['usuario'];
         $avatar = request()->avatar->getClientOriginalName();
         $dataAtual = date('Y-m-d');
         $exData = explode('-', $dataAtual);
@@ -51,6 +59,56 @@ class UsuariosController extends Controller{
             $this->request->session()->flash('success', 'Success. Updated informations');
         }else{
             $this->request->session()->flash('erro', 'Error. It was not possible to update the information');
+        }
+        return redirect()->back();
+    }
+    public function favoritos($tipos){
+        $cards = $this->cardsModel->listaCarsUsuario();
+        $usuario = $this->request->session()->get('usuario');
+        $data = array(
+                'usuarios_id' => $usuario[0]->usuarios_id,
+                'tipos_id' => $tipos
+        );
+        switch($tipos){
+            case 1:
+                $pag = 'cards';
+            break;
+            case 3:
+                $pag = 'phrasalVerbs';
+            break;
+            case 5:
+                $pag = 'youtube';
+            break;
+            case 6:
+                $pag = 'text';
+            break;
+            case 7:
+                $pag = 'tips';
+            break;
+            default:
+                $pag = 1;
+        break;
+        }
+        $dadosUsuario = $this->usuariosRepository->buscaUsuarioRepo($data);
+        return view('paginas.home', [
+            'favoritos' => $dadosUsuario['favoritos'],
+            'cards' => $cards,
+            'pag' => $pag,
+            'usuarios' => $dadosUsuario['listausuarios'],
+        ]);
+    }
+    public function deleteFavoritos(Request $request){
+        $favoritos = $request->favoritos;
+        $usuario = $this->request->session()->get('usuario');
+        $data = array(
+                'usuarios_id' => $usuario[0]->usuarios_id,
+                'favoritos' => $favoritos
+        );
+        $deleteFavoritos = $this->usuariosModel->deletarFavoritosConteudo($data);
+        if($deleteFavoritos){
+            $this->request->session()->flash('success', 'Success. Deleted favorite');
+        }else{
+            $this->request->session()->flash('erro', 'Error. It was not possible to deleted favorite');
         }
         return redirect()->back();
     }

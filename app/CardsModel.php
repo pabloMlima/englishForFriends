@@ -23,5 +23,12 @@ class CardsModel extends Model{
                                         'u.usu_nome')->get();
         return collect($busca);
     }
+    public function deletarCardUsuario($dados){
+        $delete = DB::table('cards')
+                            ->where('cards_id', $dados['card'])
+                            ->where('usuarios_id', $dados['usuarios_id'])
+                            ->delete();
+        return $delete;
+    }
 
 }

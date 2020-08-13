@@ -19,3 +19,4 @@ Route::post('/login/validation-frase', 'LoginController@validFrases');
 
 Route::post('/usuarios/novo-cadastro', 'Api\UsuariosController@store');
 Route::post('/forum/visualiza-texto', 'Api\ForumController@visualizarTexto');
+Route::post('/forum/salva-favoritos-conteudo', 'Api\ForumController@salvarFavoritos');
