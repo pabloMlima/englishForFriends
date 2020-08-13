@@ -108,7 +108,7 @@ class UsuariosController extends Controller{
         if($deleteFavoritos){
             $this->request->session()->flash('success', 'Success. Deleted favorite');
         }else{
-            $this->request->session()->flash('erro', 'Error. It was not possible to deleted favorite');
+            $this->request->session()->flash('erro', 'Error. It was not possible to deleted favoritos');
         }
         return redirect()->back();
     }
